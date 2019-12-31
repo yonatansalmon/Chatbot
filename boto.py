@@ -1,5 +1,6 @@
 from bottle import route, run, template, static_file, request
 import json
+import myfunctions
 
 
 @route('/', method='GET')
@@ -10,13 +11,11 @@ def index():
 @route("/chat", method='POST')
 def chat():
     user_message = request.POST.get('msg')
-    if user_message == "hi":
-        user_message = "Whats up?"
 
-    if user_message == "how are you?":
-        user_message = "i'm good, how are you?"
+    msg = myfunctions.main_function(user_message)
 
-    return json.dumps({"animation": "inlove", "msg": user_message})
+
+    return json.dumps({"animation": "inlove", "msg": msg})
 
 
 @route("/test", method='POST')
@@ -41,7 +40,7 @@ def images(filename):
 
 
 def main():
-    run(host='localhost', port=7000)
+    run(host='localhost', port=7000, reloader=True)
 
 if __name__ == '__main__':
     main()
