@@ -3,12 +3,12 @@ import pyowm
 import math
 from pynytimes import NYTAPI
 
-boto_answers = ["If you want to hear a joke tell me!","To talk about your feelings tell me how you feel", "To change your sentence to pig latin write pig: 'Your sentence'", "If you want to get see the weather near you tell me!", "If you want to see the top news headline tell me!"]
+boto_answers = ["If you want to hear a joke tell me!", "If you want me to tell you an interesting animal fact, tell me that you love animals!", "To change your sentence to pig latin write pig: 'Your sentence'", "If you want to get see the weather near you tell me!", "If you want to see the top news headline tell me!", "I a mathematician, I can do fun stuff with numbers. "]
 animal_facts = ["The heart of a shrimp is located in its head.", "A snail can sleep for three years.", "Elephants are the only animal that can't jump.", "Nearly three percent of the ice in Antarctic glaciers is penguin urine.", " The fingerprints of a koala are so indistinguishable from humans that they have on occasion been confused at a crime scene."]
 good_words = ["good", "great", "ok", "awesome", "fine"]
-bad_words = ["bad", "terrible", "horrible", "not good"]
-jokes_list = ['If vegetarians eat vegetables, what do humanitarians eat?', 'If tin whistles are made of tin, what are fog horns made of?',
-'Why do we park our car in the driveway and drive our car on the parkway?', 'I used to be a werewoolf... But I m much better noooooooooooow !']
+bad_words = ["bad", "terrible", "horrible", "not"]
+jokes_list = ["What’s the difference between a good joke and a bad joke timing.", "Do I lose when the police officer says papers and I say scissors?",
+"Moses had the first tablet that could connect to the cloud.", "The Journal of Medicine reports that 9 out of 10 doctors agree that 1 out of 10 doctors is an idiot.", "I tried to change my password to penis but they said it was too short."]
 swear_word_list = ['fuck', 'bastard', 'ass', 'asshole', 'bitch', "shit", "idiot"]
 greeting_list = ["hi", "hello", "whats up", "hey", "howdy"]
 count = 0
@@ -28,29 +28,34 @@ def pig_latin(user_input):
 
     return sentence, "inlove"
 
+def facts():
+    try:
+        current_fact = animal_facts.pop(random.randint(0, len(animal_facts) -1))
+        return current_fact, "inlove"
+    except ValueError:
+        return "Sorry, those are all the facts I have...", "inlove"
 
 def default_answers():
     try:
-        current_answer = boto_answers.pop()
+        current_answer = boto_answers.pop(random.randint(0,len(boto_answers)-1))
         return current_answer, "inlove"
-    except IndexError:
-        return "Sorry, thats all I have for you.. Have a nice day!", "inlove"
-
+    except ValueError:
+        return "Sorry, thats all I have for you, Ill see you in the future, when I am smarter and wiser!", "inlove"
 
 
 def jokes():
     current_joke = jokes_list[random.randint(0, len(jokes_list) - 1)]
-    return "Here is a joke to make you laugh a bit: " + current_joke
+    return current_joke
 
 def how_are_you_feeling(user_input):
     message_lower = user_input.lower()
     message_split = message_lower.split()
-    if any((feeling_word in good_words for feeling_word in message_split)):
-        return "That's great my man"
-    elif any((feeling_word in bad_words for feeling_word in message_split)):
-        return jokes()
+    if any((feeling_word in bad_words for feeling_word in message_split)):
+        return "Oh no, im sorry to hear that, heres a joke to make you feel better: " + jokes()
+    elif any((feeling_word in good_words for feeling_word in message_split)):
+        return "That's great! Since your'e ok, im a really good joker, ask me to tell you a joke! "
     else:
-        return "I didn't really understand how you are feeling"
+        return "I didn't really understand how you are feeling, tell me in other words..."
 
 def get_weather():
     owm = pyowm.OWM("58c5556de8c1f81edc788997cd4ba27e")
@@ -62,18 +67,18 @@ def get_weather():
     return f"The temperature in Jaffa is {temp}° celsius and the status is: {status}", "inlove"
 
 def question():
-    return "I know that you have a question but you should google it instead...", "inlove"
+    return "I know that you have a question but I am not very smart...", "inlove"
 
 def swear_words(user_input):
     if "fuck" in user_input:
-        return "fuck you", 'inlove'
+        return "Hey! I can also be nasty! Fuck you!", 'inlove'
     else:
-        return "Please don't say that!", 'inlove'
+        return "Whoah! Someone's got a filthy mouth... ", 'inlove'
 
 def number_trick(numbers_in_string):
     double = [i * 2 for i in numbers_in_string]
     square_root = [math.sqrt(i) for i in numbers_in_string]
-    return f"The double of your number is {double} and the square root is {square_root}", "inlove"
+    return f"Your number doubled is {double} and the square root is {square_root}", "inlove"
 
 
 def return_name(user_input):
@@ -83,17 +88,17 @@ def return_name(user_input):
     if "name is" in user_input:
         myindex = message_split.index("is")
         username = message_split[myindex + 1]
-        return f'Hello {username}, if asfasfasfasfas ', 'inlove'
+        return f"Hello {username}, how are you feeling today?", 'inlove'
     elif len(message_split) <= 2:
         username = user_input
-        return f'Hello {username}, if yasfafafsaf', 'inlove'
+        return f"Hello {username}, how are you feeling today?", 'inlove'
     else:
-        return 'Hello {username}, if youasfasf', 'inlove'
-
+        return "Hello how are you feeling?", 'inlove'
 
 
 def greeting():
-    return "Hello nice to meet you, whats up? ", 'inlove'
+    return "Hello nice to meet you, how are you feeling? ", 'inlove'
+
 
 def get_news():
     key = "aJDq9vqaMll0JjrRpRDRWwQnwQwPKtzZ"
@@ -120,7 +125,7 @@ def main_function(user_input):
         return question()
     if "joke" in user_input_lower or "bored" in user_input_lower:
         return jokes(), "inlove"
-    if "i feel" in user_input_lower or "im feeling" in user_input_lower or "i am feeling" in user_input_lower:
+    if count == 2 or "i feel" in user_input_lower or "im feeling" in user_input_lower or "i am feeling" in user_input_lower:
         return how_are_you_feeling(user_input), "inlove"
     if any((my_greeting in greeting_list for my_greeting in message_split)):
         return greeting()
@@ -129,6 +134,8 @@ def main_function(user_input):
         return number_trick(numbers_in_string)
     if "news" in user_input_lower:
         return get_news()
+    if "animal" in user_input_lower or "animals" in user_input_lower:
+        return facts()
 
     return default_answers()
 
