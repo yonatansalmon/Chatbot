@@ -12,10 +12,10 @@ def index():
 def chat():
     user_message = request.POST.get('msg')
 
-    msg, animation = boto_response.main_function(user_message)
+    response, animation = boto_response.main_function(user_message)
 
 
-    return json.dumps({"animation": animation, "msg": msg})
+    return json.dumps({"animation": animation, "msg": response})
 
 
 @route("/test", method='POST')
