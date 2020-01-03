@@ -3,7 +3,7 @@ import pyowm
 import math
 from pynytimes import NYTAPI
 
-boto_answers = ["If you want to hear a joke tell me!", "If you want me to tell you an interesting animal fact, tell me that you love animals!", "To change your sentence to pig latin write pig: 'Your sentence'", "If you want to get see the weather near you tell me!", "If you want to see the top news headline tell me!", "I a mathematician, I can do fun stuff with numbers. "]
+boto_answers = ["If you want to hear a joke tell me!", "If you want me to tell you an interesting animal fact, tell me that you love animals!", 'To change your sentence to pig latin write pig: "Your sentence"', "If you want to see the weather forecast near you tell me!", "If you want to see the top news headline tell me!", "I a mathematician, I can do fun stuff with numbers. "]
 animal_facts = ["The heart of a shrimp is located in its head.", "A snail can sleep for three years.", "Elephants are the only animal that can't jump.", "Nearly three percent of the ice in Antarctic glaciers is penguin urine.", " The fingerprints of a koala are so indistinguishable from humans that they have on occasion been confused at a crime scene."]
 good_words = ["good", "great", "ok", "awesome", "fine"]
 bad_words = ["bad", "terrible", "horrible", "not"]
@@ -26,36 +26,36 @@ def pig_latin(user_input):
             sentence_slice[i] += 'ay'
     sentence = ' '.join(sentence_slice)
 
-    return sentence, "inlove"
+    return sentence, "confused"
 
 def facts():
     try:
-        current_fact = animal_facts.pop(random.randint(0, len(animal_facts) -1))
-        return current_fact, "inlove"
+        current_fact = animal_facts.pop(random.randint(0, len(animal_facts)-1))
+        return current_fact, "dog"
     except ValueError:
-        return "Sorry, those are all the facts I have...", "inlove"
+        return "Sorry, those are all the facts I have...", "heartbroke"
 
 def default_answers():
     try:
         current_answer = boto_answers.pop(random.randint(0,len(boto_answers)-1))
-        return current_answer, "inlove"
+        return current_answer, "excited"
     except ValueError:
-        return "Sorry, thats all I have for you, Ill see you in the future, when I am smarter and wiser!", "inlove"
+        return "Sorry, thats all I have for you, Ill see you in the future, when I am smarter and wiser!", "takeoff"
 
 
 def jokes():
     current_joke = jokes_list[random.randint(0, len(jokes_list) - 1)]
-    return current_joke
+    return current_joke, "laughing"
 
 def how_are_you_feeling(user_input):
     message_lower = user_input.lower()
     message_split = message_lower.split()
     if any((feeling_word in bad_words for feeling_word in message_split)):
-        return "Oh no, im sorry to hear that, heres a joke to make you feel better: " + jokes()
+        return "Oh no, im sorry to hear that, heres a joke to make you feel better: " + jokes(), "crying"
     elif any((feeling_word in good_words for feeling_word in message_split)):
-        return "That's great! Since your'e ok, im a really good joker, ask me to tell you a joke! "
+        return "That's great! Since you're in a good mood, ask me to tell you a joke! ", "giggling"
     else:
-        return "I didn't really understand how you are feeling, tell me in other words..."
+        return "I didn't really understand how you are feeling, tell me in other words... I feel..", "no"
 
 def get_weather():
     owm = pyowm.OWM("58c5556de8c1f81edc788997cd4ba27e")
@@ -64,21 +64,21 @@ def get_weather():
     weather = loc.get_weather()
     status = weather.get_detailed_status()
     temp = weather.get_temperature("celsius")["temp"]
-    return f"The temperature in Jaffa is {temp}° celsius and the status is: {status}", "inlove"
+    return f"The temperature in Jaffa is {temp}° celsius and the status is: {status}", "ok"
 
 def question():
-    return "I know that you have a question but I am not very smart...", "inlove"
+    return "I know that you have a question but I am not very smart...", "bored"
 
 def swear_words(user_input):
     if "fuck" in user_input:
-        return "Hey! I can also be nasty! Fuck you!", 'inlove'
+        return "Hey! I can also be nasty! Fuck you!", "money"
     else:
-        return "Whoah! Someone's got a filthy mouth... ", 'inlove'
+        return "Whoah! Someone's got a filthy mouth... ", "afraid"
 
 def number_trick(numbers_in_string):
     double = [i * 2 for i in numbers_in_string]
     square_root = [math.sqrt(i) for i in numbers_in_string]
-    return f"Your number doubled is {double} and the square root is {square_root}", "inlove"
+    return f"Your number doubled is {double} and the square root is {square_root}", "dancing"
 
 
 def return_name(user_input):
@@ -88,12 +88,12 @@ def return_name(user_input):
     if "name is" in user_input:
         myindex = message_split.index("is")
         username = message_split[myindex + 1]
-        return f"Hello {username}, how are you feeling today?", 'inlove'
+        return f"Hello {username}, how are you feeling today?", 'waiting'
     elif len(message_split) <= 2:
         username = user_input
-        return f"Hello {username}, how are you feeling today?", 'inlove'
+        return f"Hello {username}, how are you feeling today?", 'ok'
     else:
-        return "Hello how are you feeling?", 'inlove'
+        return "Hello how are you feeling?", 'waiting'
 
 
 def greeting():
@@ -104,7 +104,7 @@ def get_news():
     key = "aJDq9vqaMll0JjrRpRDRWwQnwQwPKtzZ"
     nyt = NYTAPI(key)
     top_stories = nyt.top_stories()
-    return top_stories[0]["title"], "inlove"
+    return top_stories[0]["title"], "excited"
 
 
 def main_function(user_input):
@@ -124,9 +124,9 @@ def main_function(user_input):
     if user_input_lower.endswith("?"):
         return question()
     if "joke" in user_input_lower or "bored" in user_input_lower:
-        return jokes(), "inlove"
+        return jokes()
     if count == 2 or "i feel" in user_input_lower or "im feeling" in user_input_lower or "i am feeling" in user_input_lower:
-        return how_are_you_feeling(user_input), "inlove"
+        return how_are_you_feeling(user_input)
     if any((my_greeting in greeting_list for my_greeting in message_split)):
         return greeting()
     numbers_in_string = [int(s) for s in message_split if s.isdigit()]
