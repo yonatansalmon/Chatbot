@@ -1,6 +1,6 @@
 from bottle import route, run, template, static_file, request
 import json
-import myfunctions
+import boto_response
 
 
 @route('/', method='GET')
@@ -12,10 +12,10 @@ def index():
 def chat():
     user_message = request.POST.get('msg')
 
-    msg = myfunctions.main_function(user_message)
+    msg, animation = boto_response.main_function(user_message)
 
 
-    return json.dumps({"animation": "inlove", "msg": msg})
+    return json.dumps({"animation": animation, "msg": msg})
 
 
 @route("/test", method='POST')
