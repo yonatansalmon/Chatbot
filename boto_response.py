@@ -4,7 +4,7 @@ import math
 from pynytimes import NYTAPI
 
 boto_answers = ["If you want to hear a joke tell me!", "If you want me to tell you an interesting animal fact, tell me that you love animals!", 'To change your sentence to pig latin write pig: "Your sentence"',
-                "If you want to see the weather forecast near you tell me!", "If you want to see the top news headline tell me!", "I a mathematician, I can do fun stuff with numbers. "]
+                "If you want to see the weather forecast near you tell me!", "If you want to see the top news headline tell me!", "I a mathematician, I can do fun stuff with numbers, write a number and see what happens. "]
 animal_facts = ["The heart of a shrimp is located in its head.", "A snail can sleep for three years.", "Elephants are the only animal that can't jump.",
                 "Nearly three percent of the ice in Antarctic glaciers is penguin urine.", " The fingerprints of a koala are so indistinguishable from humans that they have on occasion been confused at a crime scene."]
 good_words = ["good", "great", "ok", "awesome", "fine"]
@@ -28,7 +28,6 @@ def pig_latin(user_input):
             sentence_slice[i] = sentence_slice[i][1:] + sentence_slice[i][0]
             sentence_slice[i] += 'ay'
     sentence = ' '.join(sentence_slice)
-
     return sentence, "confused"
 
 
@@ -42,7 +41,7 @@ def facts():
 
 def default_answers():
     try:
-        current_answer = boto_answers.pop(random.randint(0,len(boto_answers)-1))
+        current_answer = boto_answers.pop(random.randint(0, len(boto_answers)-1))
         return current_answer, "excited"
     except ValueError:
         return "Sorry, that's all I have for you, Ill see you in the future, when I am smarter and wiser!", "takeoff"
@@ -89,10 +88,11 @@ def swear_words(user_input):
         return "Whoah! Someone's got a filthy mouth... ", "afraid"
 
 
-def number_trick(numbers_in_string):
-    double = [i * 2 for i in numbers_in_string]
-    square_root = [math.sqrt(i) for i in numbers_in_string]
-    return f"Your number doubled is {double} and the square root is {square_root}", "dancing"
+def math_operations(numbers_in_string):
+    squared = [math.pow(i, 2) for i in numbers_in_string]
+    square_root = [round(math.sqrt(i), 1) for i in numbers_in_string]
+    sine = [round(math.sin(i), 1) for i in numbers_in_string]
+    return f"Your number/s squared is{squared}, the square root is {square_root}, and the sine of your number is{sine}", "dancing"
 
 
 def return_name(user_input):
@@ -122,7 +122,7 @@ def get_news():
     key = "aJDq9vqaMll0JjrRpRDRWwQnwQwPKtzZ"
     nyt = NYTAPI(key)
     top_stories = nyt.top_stories()
-    return top_stories[random.randint(1,11)]["title"], "excited"
+    return top_stories[random.randint(1, 11)]["title"], "excited"
 
 
 def main_function(user_input):
@@ -148,7 +148,7 @@ def main_function(user_input):
         return greeting()
     numbers_in_string = [int(s) for s in message_split if s.isdigit()]
     if numbers_in_string:
-        return number_trick(numbers_in_string)
+        return math_operations(numbers_in_string)
     if "news" in user_input_lower:
         return get_news()
     if "animal" in user_input_lower or "animals" in user_input_lower:

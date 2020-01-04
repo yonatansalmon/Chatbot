@@ -14,7 +14,6 @@ def chat():
 
     response, animation = boto_response.main_function(user_message)
 
-
     return json.dumps({"animation": animation, "msg": response})
 
 
